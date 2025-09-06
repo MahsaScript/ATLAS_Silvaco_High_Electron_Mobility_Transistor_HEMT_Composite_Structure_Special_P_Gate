@@ -1,0 +1,55 @@
+Go atlas
+Mesh space.mult=1.0
+x.mesh loc=0.00 spac=0.25
+x.mesh loc=4 spac=0.15
+x.mesh loc=6 spac=0.15
+x.mesh loc=16 spac=0.25
+
+y.mesh loc=0.00 spac=0.001
+y.mesh loc=0.03 spac=0.001
+y.mesh loc=0.1 spac=0.01
+y.mesh loc=0.3 spac=0.001
+y.mesh loc=1.95 spac=0.1
+y.mesh loc=2 spac=0.01
+y.mesh loc=2.5 spac=0.1
+y.mesh loc=13 spac=0.1
+
+region num=1 x.min=0 x.max=16 y.min=12 y.max=13 mat=Gan  
+region num=2 x.min=0 x.max=16 y.min=11.1 y.max=12 mat=Gan   substrate  
+ 
+region num=3 x.min=0 x.max=8 y.min=1.98 y.max=11.1 mat=GaN x.comp=0.4   
+region num=4 x.min=8 x.max=16 y.min=1.98 y.max=11.1 mat=GaN x.comp=0.4 
+
+region num=5 x.min=0 x.max=8 y.min=0.8 y.max=1.98 mat=AlGaN x.comp=0.4 
+region num=6 x.min=8 x.max=16 y.min=0.8 y.max=1.98 mat=AlGaN x.comp=0.4 
+
+region num=7 x.min=0 x.max=1.8 y.min=0 y.max=0.8 mat=GaN x.comp=0.4   
+region num=8 x.min=1.8 x.max=4 y.min=0 y.max=0.8 mat=AlGaN x.comp=0.4 
+region num=9 x.min=4 x.max=16 y.min=0 y.max=0.8 mat=SiN x.comp=0.4  
+
+
+#elec num=1 name=source x.min=8 x.max=1.8 y.min=0 y.max=0.8
+elec num=1 name=source x.min=8 x.max=16 y.min=0 y.max=12
+elec num=2 name=drain x.min=0 x.max=16 y.min=12 y.max=13
+elec num=3 name=gate x.min=8 x.max=16 y.min=0 y.max=12
+elec num=4 name=substrate 
+save outfile=hemt_project12.str
+#tonyplot hemt_project12.str
+go atlas
+mesh infile=hemt_project12.str
+contact name=gate work=5
+contact name=source work=3
+contact name=drain work=5
+
+models print srh
+mobility albrct.n
+model polarization calc.strain polar.scale=0.8
+output band.temp con.band val.band charge polar.charge band.param e.mobility h.mobility u.srh u.radiative u.auger permi flowlines
+
+#method newton trap maxtrap=
+solve init
+save outf=ganhemt__12.str
+tonyplot ganhemt__12.str
+
+
+
