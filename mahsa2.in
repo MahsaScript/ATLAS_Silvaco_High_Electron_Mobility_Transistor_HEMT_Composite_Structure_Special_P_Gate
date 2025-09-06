@@ -1,0 +1,57 @@
+Go atlas
+Mesh space.mult=1.0
+x.mesh loc=0.00 spac=0.5
+x.mesh loc=1.7 spac=0.5
+x.mesh loc=3.7 spac=0.5
+x.mesh loc=8 spac=0.5
+x.mesh loc=16 spac=0.5
+
+y.mesh loc=0.00 spac=0.5
+y.mesh loc=0.2 spac=0.5
+y.mesh loc=0.4 spac=0.5
+y.mesh loc=1.4 spac=0.5
+y.mesh loc=11.1 spac=0.5
+y.mesh loc=12 spac=0.5
+
+region num=1 x.min=0 x.max=16 y.min=11.1 y.max=12 mat=Sapphire substrate 
+region num=2 x.min=0 x.max=16 y.min=1.4 y.max=11.1 mat=AlN
+region num=4 x.min=0 x.max=16 y.min=0.4 y.max=1.4 mat=GaN 
+region num=5 x.min=0 x.max=16 y.min=0 y.max=0.4 mat=AlGaN x.comp=0.3
+
+
+
+elec num=1 name=source x.min=0    x.max=1.5 y.min=0 y.max=0.4
+elec num=2 name=drain  x.min=14.5 x.max=16  y.min=0 y.max=0.4
+elec num=3 name=gate   x.min=5    x.max=7   y.min=0 y.max=0.4
+elec num=4 name=substrate
+
+save outfile=hemt_project.str
+
+
+go atlas
+mesh infile=hemt_project.str
+contact name=gate work=5
+contact name=source work=3.03
+contact name=drain work=3.93
+
+models print srh
+mobility albrct.n
+model polarization calc.strain polar.scale=0.8
+output band.temp con.band val.band charge polar.charge band.param e.mobility h.mobility u.srh u.radiative u.auger permi flowlines
+
+method newton trap maxtrap=3
+solve init
+save outf=mahsa2ganhemt1.str
+tonyplot mahsa2ganhemt1.str
+
+
+solve vdrain=5.0
+solve name=gate vfinal=-20 vstep=-0.5
+log outf=ganfetex03_0.log
+solve name=gate vfinal=1 vstep=0.5
+log off
+save outfile=HEMT_Gate.str
+tonyplot HEMT_Gate.str
+
+
+
